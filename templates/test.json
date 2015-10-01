@@ -1,0 +1,7 @@
+{
+"value" : "$x",
+"value2" : "$y",
+"ts" : "$timestamp",
+"elapsed" : "$elapsedtime",
+"ticks" : "$tick"
+}
