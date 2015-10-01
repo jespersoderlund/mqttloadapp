@@ -4,9 +4,9 @@ package com.amazonaws.soderlun.iot.mqttloadapp.model;
  *
  * @author soderlun
  */
-public class MetricsConfigException extends Exception {
+public class LoadConfigException extends Exception {
 
-    public MetricsConfigException(String message) {
+    public LoadConfigException(String message) {
         super(message);
     }
     

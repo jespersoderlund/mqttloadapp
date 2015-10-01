@@ -1,8 +1,8 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.runtime;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsSeries;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.FunctionConfiguration;
 import com.amazonaws.soderlun.iot.mqttloadapp.SystemConfig;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
@@ -12,21 +12,21 @@ import javax.json.JsonObject;
  *
  * @author soderlun
  */
-public class RunningMetricsSeries {
+public class RunningLoadConfiguration {
 
-    private static final Logger LOG = Logger.getLogger(RunningMetricsSeries.class.getName());
+    private static final Logger LOG = Logger.getLogger(RunningLoadConfiguration.class.getName());
 
-    MetricsSeries ms = null;
-    MetricsConfig config;
-    MetricsThread thread;
+    FunctionConfiguration ms = null;
+    LoadConfig config;
+    LoadGeneratorThread thread;
     long start = 0;
 
-    public RunningMetricsSeries(MetricsConfig cfg) {
+    public RunningLoadConfiguration(LoadConfig cfg) {
         if (cfg == null) {
             throw new NullPointerException("Config should not be null");
         }
         config = cfg;
-        thread = new MetricsThread(config, config.getMetricsSeries());
+        thread = new LoadGeneratorThread(config, config.getMetricsSeries());
     }
 
     public void start() {

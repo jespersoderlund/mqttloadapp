@@ -1,10 +1,10 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.rest;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfigsRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsSeries;
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.MetricsSeriesRuntimeRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfigException;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfigsRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.FunctionConfiguration;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.LoadConfigurationRuntimeRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfigException;
 import java.io.StringReader;
 import java.util.List;
 import java.util.logging.Level;
@@ -67,7 +67,7 @@ public class ConfigResource {
     @Produces("application/json")
     public String getJson() {
 
-        MetricsConfig cfg = MetricsConfigsRegistry.getConfig(id);
+        LoadConfig cfg = LoadConfigsRegistry.getConfig(id);
 
         if (cfg == null) {
             throw new NotFoundException();
@@ -88,9 +88,9 @@ public class ConfigResource {
         JsonObject content = Json.createReader(new StringReader(c))
                 .readObject();
 
-        MetricsConfig cfg = MetricsConfig.newInstance(content);
+        LoadConfig cfg = LoadConfig.newInstance(content);
         cfg.setId(id);
-        MetricsConfigsRegistry.updateConfig(id, cfg);               
+        LoadConfigsRegistry.updateConfig(id, cfg);               
 //        Response resp = Response.created(context.getAbsolutePathBuilder().path(cfg.getId()).build()) .build();              
 //        return resp;        
     }
@@ -101,13 +101,13 @@ public class ConfigResource {
         JsonReader reader = Json.createReader(new StringReader(content));
         JsonObject obj = reader.readObject();
 
-        MetricsConfig cfg = MetricsConfigsRegistry.getConfig(id);
+        LoadConfig cfg = LoadConfigsRegistry.getConfig(id);
 
-        List<MetricsSeries> ms = cfg.getMetricsSeries();
+        List<FunctionConfiguration> ms = cfg.getMetricsSeries();
         if (ms.size() > 0) {
 
             try {
-                MetricsSeriesRuntimeRegistry rt = MetricsSeriesRuntimeRegistry.getInstance();
+                LoadConfigurationRuntimeRegistry rt = LoadConfigurationRuntimeRegistry.getInstance();
                 rt.start(cfg.getId(), obj);
                 UriBuilder builder = UriBuilder.fromResource(MetricsSeriesCollectionResource.class);
 
@@ -132,8 +132,8 @@ public class ConfigResource {
     @DELETE
     public void delete() {
         try {
-            MetricsConfigsRegistry.deleteConfig(id);
-        } catch (MetricsConfigException ex) {
+            LoadConfigsRegistry.deleteConfig(id);
+        } catch (LoadConfigException ex) {
             Logger.getLogger(ConfigResource.class.getName()).log(Level.SEVERE, "Could not find config id" + id, ex);
             throw  new javax.ws.rs.NotFoundException();
         }

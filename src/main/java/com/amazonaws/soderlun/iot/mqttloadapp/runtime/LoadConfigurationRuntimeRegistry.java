@@ -1,11 +1,12 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.runtime;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfigsRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfigsRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.JsonObject;
 
@@ -13,25 +14,25 @@ import javax.json.JsonObject;
  *
  * @author soderlun
  */
-public class MetricsSeriesRuntimeRegistry {
+public class LoadConfigurationRuntimeRegistry {
 
-    private static final Logger LOG = Logger.getLogger(MetricsSeriesRuntimeRegistry.class.getName());
+    private static final Logger LOG = Logger.getLogger(LoadConfigurationRuntimeRegistry.class.getName());
 
-    private static final MetricsSeriesRuntimeRegistry instance = new MetricsSeriesRuntimeRegistry();
+    private static final LoadConfigurationRuntimeRegistry instance = new LoadConfigurationRuntimeRegistry();
 
-    public static MetricsSeriesRuntimeRegistry getInstance() {
+    public static LoadConfigurationRuntimeRegistry getInstance() {
         return instance;
     }
 
-    private Map<String, RunningMetricsSeries> registry = new HashMap<>();
+    private Map<String, RunningLoadConfiguration> registry = new HashMap<>();
 
-    private MetricsSeriesRuntimeRegistry() {
+    private LoadConfigurationRuntimeRegistry() {
     }
 
     public void stop(String cfgId) {
-        LOG.info("Stopping Metrics instance runtime " + cfgId);
+        LOG.log(Level.INFO, "Stopping Running Load configuration {0}", cfgId);
 
-        RunningMetricsSeries rt = registry.get(cfgId);
+        RunningLoadConfiguration rt = registry.get(cfgId);
         if (rt != null) {
             rt.stop(cfgId);
 
@@ -39,31 +40,31 @@ public class MetricsSeriesRuntimeRegistry {
 
         }
         else {
-            throw new RuntimeException("Could not find metrics series " + cfgId);
+            throw new RuntimeException("Could not find running load configuration " + cfgId);
         }
     }
 
-    private RunningMetricsSeries getRunning(String id) {
+    private RunningLoadConfiguration getRunning(String id) {
         return registry.get(id);
     }
 
     public void start(String cfgId, JsonObject obj) {
-        LOG.info("Starting Metrics instance runtime " + cfgId);
-        MetricsConfig cfg = MetricsConfigsRegistry.getConfig(cfgId);
+        LOG.log(Level.INFO, "Starting Load configuration runtime {0}", cfgId);
+        LoadConfig cfg = LoadConfigsRegistry.getConfig(cfgId);
         if (cfg != null) {
-            RunningMetricsSeries rms = new RunningMetricsSeries(cfg);
+            RunningLoadConfiguration rms = new RunningLoadConfiguration(cfg);
             registry.put(cfgId, rms);
             rms.start();
         }
     }
 
-    public List<RunningMetricsSeries> getAllRunning() {
-        List<RunningMetricsSeries> result = new ArrayList<>();
+    public List<RunningLoadConfiguration> getAllRunning() {
+        List<RunningLoadConfiguration> result = new ArrayList<>();
         result.addAll(registry.values());
         return result;
     }
 
-    public RunningMetricsSeries get(String id) {
+    public RunningLoadConfiguration get(String id) {
         return registry.get(id);
     }
 

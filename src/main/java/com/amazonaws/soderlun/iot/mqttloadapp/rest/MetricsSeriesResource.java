@@ -1,10 +1,10 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.rest;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfigsRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsSeries;
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.MetricsSeriesRuntimeRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.RunningMetricsSeries;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfigsRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.FunctionConfiguration;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.LoadConfigurationRuntimeRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.RunningLoadConfiguration;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.GET;
@@ -20,7 +20,7 @@ import javax.ws.rs.NotFoundException;
 public class MetricsSeriesResource {
 
     private String id;
-    private MetricsSeries metricsSeries;
+    private FunctionConfiguration metricsSeries;
     private boolean running = false;
 
     /**
@@ -28,7 +28,7 @@ public class MetricsSeriesResource {
      */
     private MetricsSeriesResource(String id) {
         this.id = id;
-        MetricsConfig cfg = MetricsConfigsRegistry.getConfig(id);
+        LoadConfig cfg = LoadConfigsRegistry.getConfig(id);
         if (cfg.getMetricsSeries().size() > 0) {
             metricsSeries = cfg.getMetricsSeries().get(0);
         } else {
@@ -57,7 +57,7 @@ public class MetricsSeriesResource {
     @GET
     @Produces("application/json")
     public String getJson() {
-        RunningMetricsSeries rms = MetricsSeriesRuntimeRegistry.getInstance().get(id);
+        RunningLoadConfiguration rms = LoadConfigurationRuntimeRegistry.getInstance().get(id);
 
         if (rms != null) {
             return rms.toJsonObject().toString();
@@ -87,7 +87,7 @@ public class MetricsSeriesResource {
     }
 
     private void stop() {
-        MetricsSeriesRuntimeRegistry.getInstance().stop(id);
+        LoadConfigurationRuntimeRegistry.getInstance().stop(id);
         running = false;
     }
 }

@@ -1,19 +1,17 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.model;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.Function;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 /**
  *
  * @author soderlun
  */
-public class MetricsSeries {
+public class FunctionConfiguration {
 
-    static MetricsSeries parse(JsonObject metric) {
+    static FunctionConfiguration parse(JsonObject metric) {
         String func = metric.getString("function");
         String funcvar = metric.getString("variable");
         JsonArray params = metric.getJsonArray("parameters");
@@ -21,13 +19,13 @@ public class MetricsSeries {
         FunctionType ft = FunctionType.valueOf(func);
         Function f = Function.newInstance(ft, funcvar, params);
         
-        MetricsSeries ms = new MetricsSeries(f);
+        FunctionConfiguration ms = new FunctionConfiguration(f);
         return ms;       
     }
 
     private Function function;
 
-    public MetricsSeries(Function f) {
+    public FunctionConfiguration(Function f) {
         function = f;
 
     }

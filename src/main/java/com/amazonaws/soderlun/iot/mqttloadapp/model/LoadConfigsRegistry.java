@@ -34,18 +34,18 @@ import javax.json.Json;
  *
  * @author soderlun
  */
-public class MetricsConfigsRegistry {
+public class LoadConfigsRegistry {
 
-    private static final Map<String, MetricsConfig> configs = new HashMap<>();
-    private static Logger LOG = Logger.getLogger(MetricsConfigsRegistry.class.getName());
+    private static final Map<String, LoadConfig> configs = new HashMap<>();
+    private static Logger LOG = Logger.getLogger(LoadConfigsRegistry.class.getName());
 
-    public static List<MetricsConfig> getAllConfigs() {
+    public static List<LoadConfig> getAllConfigs() {
 
         String root = SystemConfig.getMetricsConfigRoot();
 
         configs.clear();
 
-        List<MetricsConfig> result = new ArrayList<>(configs.values());
+        List<LoadConfig> result = new ArrayList<>(configs.values());
 
         if (isLocalFilesystem(root)) {
             File r = new File(root);
@@ -56,20 +56,25 @@ public class MetricsConfigsRegistry {
                 }
             });
 
-            for (File c : configFiles) {
-                try {
-                    MetricsConfig cfg = MetricsConfig.newInstance(Json.createReader(new FileInputStream(c)).readObject());
-                    int idx = c.getName().indexOf(".json");
-                    cfg.setId(c.getName().substring(0, idx));
-                    LOG.log(Level.INFO, "Read metrics config {0} from file {1}", new Object[]{cfg.id, c.getAbsolutePath()});
-                    result.add(cfg);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(MetricsConfigsRegistry.class.getName()).log(Level.SEVERE, null, ex);
+            if (configFiles != null) {
+                for (File c : configFiles) {
+                    try {
+                        LoadConfig cfg = LoadConfig.newInstance(Json.createReader(new FileInputStream(c)).readObject());
+                        int idx = c.getName().indexOf(".json");
+                        cfg.setId(c.getName().substring(0, idx));
+                        LOG.log(Level.INFO, "Read metrics config {0} from file {1}", new Object[]{cfg.id, c.getAbsolutePath()});
+                        result.add(cfg);
+                    } catch (FileNotFoundException ex) {
+                        Logger.getLogger(LoadConfigsRegistry.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+            }
+            else {
+                LOG.log(Level.SEVERE, "Error in Reading config files configuration of config-file, could not find path: {0}", root);
             }
         } else if (isS3(root)) {
             // TBD
-            AmazonS3 api = new AmazonS3Client(SystemConfig.credentials);
+            AmazonS3 api = new AmazonS3Client(SystemConfig.getCredentials());
 
             SystemConfig.S3Info info = SystemConfig.getS3Info(root);
 
@@ -86,33 +91,33 @@ public class MetricsConfigsRegistry {
                     S3Object conf = api.getObject(info.bucket, c.getKey());
                     S3ObjectInputStream ois = conf.getObjectContent();
 
-                    MetricsConfig cfg = MetricsConfig.newInstance(Json.createReader(ois).readObject());
+                    LoadConfig cfg = LoadConfig.newInstance(Json.createReader(ois).readObject());
 
                     result.add(cfg);
                 }
             }
         }
 
-        for (MetricsConfig c : result) {
+        for (LoadConfig c : result) {
             configs.put(c.getId(), c);
         }
 
         return result;
     }
 
-    public static MetricsConfig getConfig(String id) {
+    public static LoadConfig getConfig(String id) {
         return configs.get(id);
     }
 
-    public static void createConfig(MetricsConfig cfg) {
+    public static void createConfig(LoadConfig cfg) {
         saveConfig(cfg);
 
         configs.put(cfg.getId(), cfg);
     }
 
-    public static void deleteConfig(String id) throws MetricsConfigException {
+    public static void deleteConfig(String id) throws LoadConfigException {
         if (configs.remove(id) == null) {
-            throw new MetricsConfigException("Could not find config " + id);
+            throw new LoadConfigException("Could not find config " + id);
         }
 
         String root = SystemConfig.getMetricsConfigRoot();
@@ -124,7 +129,7 @@ public class MetricsConfigsRegistry {
             }
             f.delete();
         } else if (isS3(root)) {
-            AmazonS3 api = new AmazonS3Client(SystemConfig.credentials);
+            AmazonS3 api = new AmazonS3Client(SystemConfig.getCredentials());
 
             SystemConfig.S3Info info = SystemConfig.getS3Info(SystemConfig.getConfigRoot());
 
@@ -136,12 +141,12 @@ public class MetricsConfigsRegistry {
         }
     }
 
-    public static void updateConfig(String id, MetricsConfig cfg) {
+    public static void updateConfig(String id, LoadConfig cfg) {
         configs.put(id, cfg);
         saveConfig(cfg);
     }
 
-    private static void saveConfig(MetricsConfig cfg) {
+    private static void saveConfig(LoadConfig cfg) {
         String root = SystemConfig.getMetricsConfigRoot();
         String path = root + "/" + cfg.getId() + ".json";
         if (isLocalFilesystem(root)) {
@@ -153,7 +158,7 @@ public class MetricsConfigsRegistry {
                 throw new RuntimeException("Could not write to local storage");
             }
         } else if (isS3(root)) {
-            AmazonS3 api = new AmazonS3Client(SystemConfig.credentials);
+            AmazonS3 api = new AmazonS3Client(SystemConfig.getCredentials());
 
             SystemConfig.S3Info info = SystemConfig.getS3Info(SystemConfig.getConfigRoot());
 

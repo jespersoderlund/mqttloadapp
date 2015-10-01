@@ -1,7 +1,7 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.rest;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.MetricsSeriesRuntimeRegistry;
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.RunningMetricsSeries;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.LoadConfigurationRuntimeRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.RunningLoadConfiguration;
 import com.amazonaws.soderlun.iot.mqttloadapp.rest.MetricsSeriesResource;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -40,10 +40,10 @@ public class MetricsSeriesCollectionResource {
     @GET
     @Produces("application/json")
     public String getJson() {
-        List<RunningMetricsSeries> configs = MetricsSeriesRuntimeRegistry.getInstance().getAllRunning();
+        List<RunningLoadConfiguration> configs = LoadConfigurationRuntimeRegistry.getInstance().getAllRunning();
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
-        for (RunningMetricsSeries rms : configs) {
+        for (RunningLoadConfiguration rms : configs) {
             builder.add(rms.toJsonObject());
         }
         

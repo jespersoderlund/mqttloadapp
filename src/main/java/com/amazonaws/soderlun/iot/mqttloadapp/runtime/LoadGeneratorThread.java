@@ -1,10 +1,10 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.runtime;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsSeries;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.FunctionConfiguration;
 import com.amazonaws.soderlun.iot.mqttloadapp.model.Function;
 import com.amazonaws.soderlun.iot.mqttloadapp.model.TemplateRepository;
 import com.amazonaws.soderlun.iot.mqttloadapp.model.Template;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
 import com.google.common.util.concurrent.RateLimiter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -19,18 +19,18 @@ import org.eclipse.paho.client.mqttv3.MqttException;
  *
  * @author soderlun
  */
-public class MetricsThread extends Thread {
+public class LoadGeneratorThread extends Thread {
 
-    private static final Logger LOG = Logger.getLogger(MetricsThread.class.getName());
+    private static final Logger LOG = Logger.getLogger(LoadGeneratorThread.class.getName());
     private static final int MIN_TICK_TIME_MS = 10;
 
     private boolean running = false;
-    private List<MetricsSeries> metricsseries = new ArrayList<>();
-    private final MetricsConfig config;
+    private List<FunctionConfiguration> metricsseries = new ArrayList<>();
+    private final LoadConfig config;
     private long started;
     private int numberTicks = 0;
 
-    public MetricsThread(MetricsConfig cfg, List<MetricsSeries> ms) {
+    public LoadGeneratorThread(LoadConfig cfg, List<FunctionConfiguration> ms) {
         metricsseries = ms;
         config = cfg;
     }
@@ -75,12 +75,12 @@ public class MetricsThread extends Thread {
         this.interrupt();
     }
 
-    private byte[] formatPayload(String templateId, List<MetricsSeries> metricsseries) {
+    private byte[] formatPayload(String templateId, List<FunctionConfiguration> metricsseries) {
 
         long elapsedTime = System.currentTimeMillis() - started;
 
         Map<String, String> variableValues = new HashMap<>();
-        for (MetricsSeries ms : metricsseries) {
+        for (FunctionConfiguration ms : metricsseries) {
             Function func = ms.getFunction();
 
             StringBuilder builder = new StringBuilder();
@@ -108,7 +108,6 @@ public class MetricsThread extends Thread {
             LOG.log(Level.SEVERE, "Could not UTF-8 format payload", ex);
             throw new RuntimeException("Could not UTF-8 format payload");
         }
-
     }
 
 

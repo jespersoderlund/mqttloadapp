@@ -68,7 +68,7 @@ public class SslUtil {
 
     private static byte[] getBytesFromFile(String file) {
         if (SystemConfig.isS3(file)) {
-            AmazonS3Client api = new AmazonS3Client(SystemConfig.credentials);
+            AmazonS3Client api = new AmazonS3Client(SystemConfig.getCredentials());
 
             S3Info info = SystemConfig.getS3Info(file);
 

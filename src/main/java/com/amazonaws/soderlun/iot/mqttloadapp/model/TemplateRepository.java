@@ -19,7 +19,6 @@ import java.util.TimerTask;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.json.Json;
 
 /**
  *
@@ -71,8 +70,8 @@ public class TemplateRepository {
                 }
             }
             return result;
-        } else if (isS3(root)) {
-            AmazonS3Client api = new AmazonS3Client(SystemConfig.credentials);
+        } else if (SystemConfig.isS3(root)) {
+            AmazonS3Client api = new AmazonS3Client(SystemConfig.getCredentials());
             SystemConfig.S3Info info = SystemConfig.getS3Info(SystemConfig.getTemplateRoot());
 
             ListObjectsRequest req = new ListObjectsRequest();
@@ -124,9 +123,6 @@ public class TemplateRepository {
         return f.isAbsolute();
     }
 
-    private boolean isS3(String root) {
-        return root.startsWith("s3://");
-    }
 
     public Template getTemplate(String templateId) {
         return cachedTemplates.get(templateId);
@@ -155,7 +151,7 @@ public class TemplateRepository {
             } else {
                 throw new FileNotFoundException("Non existing template id");
             }
-        } else if (isS3(templateRoot)) {
+        } else if (SystemConfig.isS3(templateRoot)) {
             // TODO
         } else {
             throw new RuntimeException("Template configuration error, no valid template root");

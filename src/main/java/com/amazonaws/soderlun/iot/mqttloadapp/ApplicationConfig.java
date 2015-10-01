@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.amazonaws.soderlun.iot.mqttloadapp;
 
 import java.util.Set;
@@ -29,8 +24,6 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(com.amazonaws.soderlun.iot.mqttloadapp.KnuppResource.class);
-        resources.add(com.amazonaws.soderlun.iot.mqttloadapp.KnuppsResource.class);
         resources.add(com.amazonaws.soderlun.iot.mqttloadapp.rest.ConfigResource.class);
         resources.add(com.amazonaws.soderlun.iot.mqttloadapp.rest.ConfigsResource.class);
         resources.add(com.amazonaws.soderlun.iot.mqttloadapp.rest.MetricsSeriesCollectionResource.class);

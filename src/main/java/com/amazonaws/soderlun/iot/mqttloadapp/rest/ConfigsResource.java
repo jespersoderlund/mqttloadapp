@@ -1,9 +1,9 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.rest;
 
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfigsRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfigsRegistry;
 import com.amazonaws.soderlun.iot.mqttloadapp.rest.ConfigResource;
-import com.amazonaws.soderlun.iot.mqttloadapp.model.MetricsConfig;
-import com.amazonaws.soderlun.iot.mqttloadapp.runtime.MetricsSeriesRuntimeRegistry;
+import com.amazonaws.soderlun.iot.mqttloadapp.model.LoadConfig;
+import com.amazonaws.soderlun.iot.mqttloadapp.runtime.LoadConfigurationRuntimeRegistry;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -49,13 +49,13 @@ public class ConfigsResource {
     @GET
     @Produces("application/json")
     public String getJson() {
-        List<MetricsConfig> configs = MetricsConfigsRegistry.getAllConfigs();
+        List<LoadConfig> configs = LoadConfigsRegistry.getAllConfigs();
 
         JsonArrayBuilder builder = Json.createArrayBuilder();
-        for (MetricsConfig c : configs) {
+        for (LoadConfig c : configs) {
             builder.add(Json.createObjectBuilder()
                     .add("id", c.getId())
-                    .add("running", MetricsSeriesRuntimeRegistry.getInstance().isRunning(c.getId()))
+                    .add("running", LoadConfigurationRuntimeRegistry.getInstance().isRunning(c.getId()))
             );
         }
         StringWriter writer = new StringWriter();
@@ -81,8 +81,8 @@ public class ConfigsResource {
         JsonObject content = Json.createReader(new StringReader(c))
                 .readObject();
 
-        MetricsConfig cfg = MetricsConfig.newInstance(content);
-        MetricsConfigsRegistry.createConfig(cfg);
+        LoadConfig cfg = LoadConfig.newInstance(content);
+        LoadConfigsRegistry.createConfig(cfg);
         Response resp = Response.created(context.getAbsolutePathBuilder().path(cfg.getId()).build())
                 .build();
 

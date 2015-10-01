@@ -15,23 +15,23 @@ import javax.json.JsonValue;
  *
  * @author soderlun
  */
-public class MetricsConfig {
+public class LoadConfig {
 
-    public static MetricsConfig newInstance(JsonObject obj) {
+    public static LoadConfig newInstance(JsonObject obj) {
         return parseJson(obj);
     }
 
     String id;
-    List<MetricsSeries> metrics = new ArrayList<>();
+    List<FunctionConfiguration> metrics = new ArrayList<>();
     String templateId;
     String topic;
     private int rate;
 
-    public MetricsConfig(String id) {
+    public LoadConfig(String id) {
         this.id = id;
     }
 
-    private MetricsConfig(String tid, String t, List<MetricsSeries> series) {
+    private LoadConfig(String tid, String t, List<FunctionConfiguration> series) {
         templateId = tid;
         id = UUID.randomUUID().toString();
         metrics = Collections.unmodifiableList(series);
@@ -42,7 +42,7 @@ public class MetricsConfig {
         return id;
     }
 
-    public List<MetricsSeries> getMetricsSeries() {
+    public List<FunctionConfiguration> getMetricsSeries() {
         return metrics;
     }
 
@@ -62,34 +62,34 @@ public class MetricsConfig {
                 .add("topic", getTopic())
                 .add("rate", getRate());
 
-        JsonArrayBuilder metricsBuilder = Json.createArrayBuilder();
+        JsonArrayBuilder functionsBuilder = Json.createArrayBuilder();
 
-        for (MetricsSeries ms : metrics) {
-            ms.toJson(metricsBuilder);
+        for (FunctionConfiguration ms : metrics) {
+            ms.toJson(functionsBuilder);
         }
 
-        builder.add("metricsseries", metricsBuilder);
+        builder.add("functions", functionsBuilder);
         return builder.build().toString();
     }
 
-    private static MetricsConfig parseJson(JsonObject obj) {
+    private static LoadConfig parseJson(JsonObject obj) {
 
-        // Parse MetricsConfig attributes
+        // Parse LoadConfig attributes
         String topic = obj.getString("topic");
         String templateId = obj.getString("templateid");
         int rate = obj.getInt("rate");
         String id = obj.getString("id", null);
 
         // Parse Metrics Series
-        JsonArray metrics = obj.getJsonArray("metricsseries");
-        List<MetricsSeries> series = new ArrayList<>();
+        JsonArray metrics = obj.getJsonArray("functions");
+        List<FunctionConfiguration> series = new ArrayList<>();
         if (metrics != null) {
             for (JsonValue metric : metrics) {
-                series.add(MetricsSeries.parse((JsonObject) metric));
+                series.add(FunctionConfiguration.parse((JsonObject) metric));
             }
         }
 
-        MetricsConfig cfg = new MetricsConfig(templateId, topic, series);
+        LoadConfig cfg = new LoadConfig(templateId, topic, series);
         cfg.setRate(rate);
         if (id != null) {
             cfg.setId(id);
