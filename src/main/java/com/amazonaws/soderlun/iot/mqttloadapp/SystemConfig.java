@@ -21,10 +21,9 @@ public class SystemConfig {
 
     private static final Logger LOG = Logger.getLogger(SystemConfig.class.getName());
 
-    public static AWSCredentials credentials;
-
-    static {
-        credentials = new MyCredentialsProvider().getCredentials();
+    
+    public static AWSCredentials getCredentials() {
+        return new MyCredentialsProvider().getCredentials();
     }
 
     public static String getTemplateRoot() {
@@ -33,9 +32,7 @@ public class SystemConfig {
 
     public static String getConfigRoot() {
         String ret = System.getProperty("config_root", System.getenv("config_root"));
-        // return "/Users/soderlun/development/git/mavenproject1/mqttloadapp";
         return ret;
-        // return 
     }
 
     public static String getMetricsConfigRoot() {
@@ -49,7 +46,7 @@ public class SystemConfig {
         if (isS3(root)) {
             S3Info inf = getS3Info(SystemConfig.getConfigRoot());
 
-            AmazonS3Client api = new AmazonS3Client(credentials);
+            AmazonS3Client api = new AmazonS3Client(getCredentials());
             S3Object prop = api.getObject(inf.bucket, inf.prefixPath + "/mqtt.properties");
             try (InputStream fis = prop.getObjectContent()) {
                 props.load(fis);
