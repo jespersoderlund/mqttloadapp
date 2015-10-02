@@ -101,7 +101,7 @@ Create a load configuration with 2 functions, publishing values to the "foo/expr
             "variable": "x",
             "parameters": [
                 {
-                    "expression": "cos(tick)",
+                    "expression": "cos(tick) * elapsed^2 - tick^3",
 					"tickscalefactor" : 10
                 }
             ]
@@ -130,7 +130,7 @@ An absolute path to a local file system or an S3 object key on the format `s3://
 ### mqtt.properties
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
 The following properties need to be provided for the connection to the MQTT-broker
-* brokerurl - The url without schema to to the broker
+* brokerurl - The url and port to the broker gateway, e.g. `tcp:data.iot.us-east-1.amazonaws.com:8883`
 * clientid - The clientid to be used in the MQTT-connection, if left blank will be a string representation of the local IP-address for the server
 * cafile - The certificate file with the Root CA authorizing the authenticity of the server side of the connection
 * cert - The private certificate that is registered with the IoT platform
@@ -141,5 +141,21 @@ Template root can be either local filesystem or S3. By detault it's ${config_roo
 Template-files are stored in this location, files can have 2 extensions, ".csv" or ".json" indicating the formats supported.
 The name of a template is the file/object key infront of the extension.
 
-## metricsconfig_root
-Can be either local filesystem or S3, by default it's ${config_root}/metricsconfig_root.
+## loadconfig_root
+Can be either local filesystem or S3, by default it's ${config_root}/loadconfig_root.
+
+# Getting started
+## Installation
+There is a AWS CloudFormation template available that will spin up an AWS ElasticBeanstalk environment, in the default VPC of the account. The Beanstalk environment will be a single-instance configuration to keep the cost to a minimum. The template will have the following parameters:
+* location of the built version of the application
+* config_root - Specify the s3 folder location under which the mqtt.properties configuration file can be found
+* template_root - using default value, leave blank
+* loadconfig_root - using default value, leave blank
+
+Output parameters will be the URL at which the environment is accessible
+
+## Create a LoadConfiguration
+
+## Start a load configuration
+
+## Stop a running metrics series
