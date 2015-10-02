@@ -7,6 +7,8 @@ A load configuration is the entity that as a unit can be started and stopped. A 
 - Rate (messages per minute)
 - List of functions
 
+A running load configuration is called a metrics series.
+
 ## Templates
 Two kinds of templates are supported by the load generator. JSON and CSV.
 
@@ -79,7 +81,7 @@ The API resources are
 ````		
 ## Examples
 ### Create Load Configuration
-Create a load configuration with 2 functions. One with random int values between 10 and 100 assigned to variable y. Another one with calculating the cosine of the scaled number of ticks, by a factor of 10. So that the first value will have a value of cos(0.1), second one cos(0.2) and the 100th will have cos(10.9), this function value will be assigned variable when instantiating the template.
+Create a load configuration with 2 functions, publishing values to the "foo/expr" topic at a rate of 5 per minute. One with random int values between 10 and 100 assigned to variable y. Another one with calculating the cosine of the scaled number of ticks, by a factor of 10. So that the first value will have a value of cos(0.1), second one cos(0.2) and the 100th will have cos(10.9), this function value will be assigned variable when instantiating the template.
 ````
 {
     "functions": [
