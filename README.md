@@ -79,6 +79,7 @@ The API resources are
 ````		
 ## Examples
 ### Create Load Configuration
+Create a load configuration with 2 functions. One with random int values between 10 and 100 assigned to variable y. Another one with calculating the cosine of the scaled number of ticks, by a factor of 10. So that the first value will have a value of cos(0.1), second one cos(0.2) and the 100th will have cos(10.9), this function value will be assigned variable when instantiating the template.
 ````
 {
     "functions": [
@@ -98,12 +99,13 @@ The API resources are
             "variable": "x",
             "parameters": [
                 {
-                    "expression": "cos(tick)"
+                    "expression": "cos(tick)",
+					"tickscalefactor" : 10
                 }
             ]
         }
     ],
-    "rate": 5,    
+    "rate": 5,
     "templateid": "test",
     "topic": "foo/expr"
 }
