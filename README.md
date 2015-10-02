@@ -1,6 +1,13 @@
-
+# Introduction
 Configurable load generator for MQTT messages
-# Templates
+
+# LoadConfiguration
+A load configuration is the entity that as a unit can be started and stopped. A load configuration contains:
+- Template
+- Rate (messages per minute)
+- List of functions
+
+## Templates
 Two kinds of templates are supported by the load generator. JSON and CSV.
 
 The templates cannot currently be created or edited in the GUI, but can be visualized.
@@ -10,13 +17,6 @@ The templates can contain a number of variables that will be replaced when insta
 * elapsedtime - Milliseconds since start of run
 * timestamp - Unix epoch milliseconds
 * <variables from metrics series> - The variable from each metrics series is also available in the template for subsitution
-
-# LoadConfiguration
-A load configuration is the entity that as a unit can be started and stopped. A load configuration contains:
-- Template
-- Rate (messages per minute)
-- List of functions
-
 
 ## Functions
 Each function has a function type which will specifify the types of values and the configuration parameters supported. A function will generate a single output value based on the following input parameters:
@@ -49,6 +49,15 @@ The parameters supported by the EXPR function are:
 - expression -
 - elapsedscalefactor - Scale factor to apply to the elapsetimestamp, e.g. with a scale factor of 1000 and 20000 ms elapsedtimestamp the variable ”elapsed” would have the value 20 when evaluated in the expressions
 - tickscalefactor - Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
+
+# API
+There is a REST-API
+
+# Web Interface
+The web interface is built using AngularJS and is completly stand-alone, it could be delivered as a separate deployment unit and served from S3, but given scope and the fact that a server needs to be available to run the load, the web interface is delivered from the packaged WAR-application
+
+# Server
+The server is currently built and developed and tested using Glassfish 4 but should run a container supporting JAX-RS. A small tweak to the configuration had to be done to ellinimate a problem with a version of Guava in Glassfish "leaking" into the application and interfered with Guava functionality used in the application.
 
 # Configuration
 Configuration locations can be either in a local file system or in S3. All S3 locations are on the form "s3://<bucket>/<key>". When configuring the root, then all objects are accessed relative to that.
