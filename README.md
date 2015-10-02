@@ -54,6 +54,7 @@ The parameters supported by the EXPR function are:
 There is a REST-API, the resource endpoint is <host>:<port>/mqttloadapp/webresources. The API only supports application/json as content type.
 
 The API resources are
+````
 /config
 	- GET - Return a list of load config ids as well as their "running" status
 	- POST - Create a new Load configuration representation with the content of the POST body
@@ -72,7 +73,7 @@ The API resources are
 	GET - Returns a list of templates
 	/{template-id}
 		GET - Returns the template object
-		
+````		
 
 # Web Interface
 The web interface is built using AngularJS and is completly stand-alone, it could be delivered as a separate deployment unit and served from S3, but given scope and the fact that a server needs to be available to run the load, the web interface is delivered from the packaged WAR-application
