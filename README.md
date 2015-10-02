@@ -1,6 +1,6 @@
 # mqttloadapp
 Configurable load generator for MQTT messages
-Templates
+== Templates ==
 Two kinds of templates are supported by the load generator. JSON and CSV.
 
 The templates cannot currently be created or edited in the GUI, but can be visualized.
@@ -11,13 +11,14 @@ The templates can contain a number of variables that will be replaced when insta
 * timestamp - Unix epoch milliseconds
 * <variables from metrics series> - The variable from each metrics series is also available in the template for subsitution
 
-LoadConfiguration
-A load configuration is the entity that as a unit can be started and stopped. When a load configuration is
+== LoadConfiguration ==
+A load configuration is the entity that as a unit can be started and stopped. A load configuration contains:
+- Template
+- Rate (messages per minute)
+- List of functions
 
-Metrics Series
-A metrics series is defined by the function used to generate the value
 
-Functions
+=== Functions ===
 Each function has a function type which will specifify the types of values and the configuration parameters supported. A function will generate a single output value based on the following input parameters:
 * Tick - The number of samples that have been taken from the metricsserie
 * Elapsed time - The amount of time that has passed since the metrics series configuration was started, in milliseconds
@@ -49,13 +50,15 @@ The parameters supported by the EXPR function are:
 - elapsedscalefactor - Scale factor to apply to the elapsetimestamp, e.g. with a scale factor of 1000 and 20000 ms elapsedtimestamp the variable ”elapsed” would have the value 20 when evaluated in the expressions
 - tickscalefactor - Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
 
-Configuration
-mqtt.properties
+== Configuration ==
+Configuration locations can be either in a local file system or in S3. All S3 locations are on the form "s3://<bucket>/<key>". When configuring the root, then all objects are accessed relative to that.
+
+=== mqtt.properties ===
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
 The
 
-config_root
+=== config_root ===
 
-template_root
+=== template_root ===
 
 metricsconfig_root
