@@ -41,7 +41,7 @@ public class LoadConfigsRegistry {
 
     public static List<LoadConfig> getAllConfigs() {
 
-        String root = SystemConfig.getMetricsConfigRoot();
+        String root = SystemConfig.getLoadConfigRoot();
 
         configs.clear();
 
@@ -120,7 +120,7 @@ public class LoadConfigsRegistry {
             throw new LoadConfigException("Could not find config " + id);
         }
 
-        String root = SystemConfig.getMetricsConfigRoot();
+        String root = SystemConfig.getLoadConfigRoot();
 
         if (isLocalFilesystem(root)) {
             File f = new File(root, id + ".json");
@@ -147,7 +147,7 @@ public class LoadConfigsRegistry {
     }
 
     private static void saveConfig(LoadConfig cfg) {
-        String root = SystemConfig.getMetricsConfigRoot();
+        String root = SystemConfig.getLoadConfigRoot();
         String path = root + "/" + cfg.getId() + ".json";
         if (isLocalFilesystem(root)) {
             Path p = Paths.get(path);

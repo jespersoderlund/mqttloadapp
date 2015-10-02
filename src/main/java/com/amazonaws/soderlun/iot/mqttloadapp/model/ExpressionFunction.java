@@ -29,10 +29,10 @@ public class ExpressionFunction extends Function {
     public void value(StringBuilder buff, long millisElapsed, int ticks) {
         Expression expr = expressionTemplate.build();
         
-        double scaledTick = ticks / scaleFactorTick;
+        double scaledTick = ticks / (double)scaleFactorTick;
         expr.setVariable("tick", scaledTick);
         
-        double scaledElapsed = millisElapsed / scaleFactorElapsed;
+        double scaledElapsed = millisElapsed / (double)scaleFactorElapsed;
         
         expr.setVariable("elapsed", scaledElapsed);
         

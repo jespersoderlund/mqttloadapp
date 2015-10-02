@@ -9,7 +9,7 @@ mqttApp.config(['$routeProvider', function ($routeProvider) {
             controller: 'ConfigDetailController'
         }).when('config/:configId/series/:seriesId', {
             templateUrl: '',
-            controller: 'MetricsSeriesController'
+            controller: 'FunctionController'
         }).when('/template', {
             templateUrl: 'partials/templatelist.html',
             controller: 'TemplateListController'

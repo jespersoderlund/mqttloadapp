@@ -72,8 +72,8 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
         $scope.ms = {};
 
         ngDialog.openConfirm({
-            template: 'partials/metricsseriesdetail.html',
-            controller: 'MetricsSeriesController',
+            template: 'partials/functiondetail.html',
+            controller: 'FunctionController',
             scope: $scope,
             className: 'ngdialog-theme-default',
 //            data: $scope.editmode,
@@ -90,8 +90,8 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
         $scope.ms.index = index;
 
         ngDialog.openConfirm({
-            template: 'partials/metricsseriesdetail.html',
-            controller: 'MetricsSeriesController',
+            template: 'partials/functiondetail.html',
+            controller: 'FunctionController',
             scope: $scope,
             className: 'ngdialog-theme-default',
 //            data: $scope.editmode            
@@ -115,7 +115,7 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
     };
 });
 
-configControllers.controller('MetricsSeriesController', function ($scope, $q, ngDialog) {
+configControllers.controller('FunctionController', function ($scope, $q, ngDialog) {
     if ($scope.ms.parameters == null) {
         $scope.ms.parameters = [];
     }

@@ -1,6 +1,7 @@
 package com.amazonaws.soderlun.iot.mqttloadapp.runtime;
 
 import com.amazonaws.soderlun.iot.mqttloadapp.SslUtil;
+import com.amazonaws.soderlun.iot.mqttloadapp.SystemConfig;
 import java.io.File;
 import java.net.NetworkInterface;
 import java.sql.Timestamp;
@@ -120,6 +121,13 @@ public class MqttConnection implements MqttCallback {
      */
     public void publish(String topicName, int qos, byte[] payload) throws MqttException {
 
+        if( ! connected ) {
+            LOG.info("Trying to re-connect");
+            if( !connect(SystemConfig.getMqttConfigProperties()) ) {
+                LOG.log(Level.WARNING, "Could not connect and publish {0} to topic {1}", new Object[]{new String(payload), topicName});
+                return;
+            }                   
+        }
         String time = new Timestamp(System.currentTimeMillis()).toString();
         LOG.log(Level.INFO, "Publishing at: {0} to topic \"{1}\" qos {2}", new Object[]{time, topicName, qos});
 

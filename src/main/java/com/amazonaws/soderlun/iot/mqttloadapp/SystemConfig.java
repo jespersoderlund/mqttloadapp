@@ -27,7 +27,7 @@ public class SystemConfig {
     }
 
     public static String getTemplateRoot() {
-        return System.getProperty("template_root", System.getenv("template_root") != null ? System.getenv("template_root") : getConfigRoot() + "/templates");
+        return System.getProperty("template_root", System.getenv("template_root") != null ? System.getenv("template_root") : getConfigRoot() + "/template_root");
     }
 
     public static String getConfigRoot() {
@@ -35,8 +35,8 @@ public class SystemConfig {
         return ret;
     }
 
-    public static String getMetricsConfigRoot() {
-        return System.getProperty("metricsconfig_root", System.getenv("metricsconfig_root") != null ? System.getenv("metricsconfig_root") : getConfigRoot() + "/metricsconfig_root");
+    public static String getLoadConfigRoot() {
+        return System.getProperty("loadconfig_root", System.getenv("loadconfig_root") != null ? System.getenv("loadconfig_root") : getConfigRoot() + "/loadconfig_root");
     }
 
     public static Properties getMqttConfigProperties() {

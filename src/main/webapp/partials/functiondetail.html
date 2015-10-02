@@ -32,9 +32,9 @@
                             </tbody>
                         </table>
                         <button class="btn btn-default" ng-click="createNewParameter()">New Parameter</button>
-                        <div class="form-group" ng-hide="!config.editmode">
+                        <div class="form-group">
                             <input class="btn btn-primary" ng-disabled="!config.editmode" type="submit" id="submitConfig" name="Save" value="Save">
-                            <a class="btn" ng-disabled="!config.editmode" ng-click="cancelMetricsSeriesEdit(config)">Cancel</a>
+                            <a class="btn" ng-click="cancelMetricsSeriesEdit(config)">Cancel</a>
                         </div>
                     </form>
                 </div>
