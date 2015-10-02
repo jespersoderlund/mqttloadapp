@@ -77,6 +77,37 @@ The API resources are
 		GET - Returns the template object
 		DELETE - Delete the template
 ````		
+## Examples
+### Create Load Configuration
+````
+{
+    "functions": [
+        {
+            "function": "RANDOM",
+            "variable": "y",
+            "parameters": [
+                {
+                    "type": "INT",
+                    "maxvalue" : 1000,
+                    "minvalue" : 10
+                }
+            ]
+        },
+        {
+            "function": "EXPR",
+            "variable": "x",
+            "parameters": [
+                {
+                    "expression": "cos(tick)"
+                }
+            ]
+        }
+    ],
+    "rate": 5,    
+    "templateid": "test",
+    "topic": "foo/expr"
+}
+````
 
 # Web Interface
 The web interface is built using AngularJS and is completly stand-alone, it could be delivered as a separate deployment unit and served from S3, but given scope and the fact that a server needs to be available to run the load, the web interface is delivered from the packaged WAR-application
