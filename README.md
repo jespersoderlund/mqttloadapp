@@ -123,10 +123,16 @@ The server is currently built and developed and tested using Glassfish 4 but sho
 Configuration locations can be either in a local file system or in S3. All S3 locations are on the form "s3://<bucket>/<key>". When configuring the root, then all objects are accessed relative to that.
 
 ## config_root
+An absolute path to a local file system or an S3 object key on the format "s3://<bucketname>/<s3-folder-prefix>".
 
 ### mqtt.properties
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
-The
+The following properties need to be provided for the connection to the MQTT-broker
+* brokerurl - The url without schema to to the broker
+* clientid - The clientid to be used in the MQTT-connection, if left blank will be a string representation of the local IP-address for the server
+* cafile - The certificate file with the Root CA authorizing the authenticity of the server side of the connection
+* cert - The private certificate that is registered with the IoT platform
+* privkey - The private key for the public key contained in the certicate
 
 ## template_root
 Template root can be either local filesystem or S3. By detault it's ${config_root}/templates.
