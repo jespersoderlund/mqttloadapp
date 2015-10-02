@@ -51,7 +51,28 @@ The parameters supported by the EXPR function are:
 - tickscalefactor - Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
 
 # API
-There is a REST-API
+There is a REST-API, the resource endpoint is <host>:<port>/mqttloadapp/webresources. The API only supports application/json as content type.
+
+The API resources are
+/config
+	- GET - Return a list of load config ids as well as their "running" status
+	- POST - Create a new Load configuration representation with the content of the POST body
+	/{load config id}
+		- GET - Return the detailed Load config object
+		- PUT - Updates the representation of the load config object
+		- POST - Start a metrics series based on the config
+		- DELETE - Yupp, you guessed it, it deletes the load config
+
+/series
+	- GET - Returns a list of running metrics series
+	/{load config id}
+		- DELETE - Deletes the metrics series and stops the process generating load
+
+/template
+	GET - Returns a list of templates
+	/{template-id}
+		GET - Returns the template object
+		
 
 # Web Interface
 The web interface is built using AngularJS and is completly stand-alone, it could be delivered as a separate deployment unit and served from S3, but given scope and the fact that a server needs to be available to run the load, the web interface is delivered from the packaged WAR-application
