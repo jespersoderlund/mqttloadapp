@@ -50,7 +50,7 @@ The parameters supported by the EXPR function are:
 - elapsedscalefactor - Scale factor to apply to the elapsetimestamp, e.g. with a scale factor of 1000 and 20000 ms elapsedtimestamp the variable ”elapsed” would have the value 20 when evaluated in the expressions
 - tickscalefactor - Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
 
-# Configuration ==
+# Configuration
 Configuration locations can be either in a local file system or in S3. All S3 locations are on the form "s3://<bucket>/<key>". When configuring the root, then all objects are accessed relative to that.
 
 ## config_root
