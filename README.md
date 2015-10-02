@@ -64,10 +64,14 @@ Configuration locations can be either in a local file system or in S3. All S3 lo
 
 ## config_root
 
-## mqtt.properties
+### mqtt.properties
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
 The
 
 ## template_root
+Template root can be either local filesystem or S3. By detault it's ${config_root}/templates.
+Template-files are stored in this location, files can have 2 extensions, ".csv" or ".json" indicating the formats supported.
+The name of a template is the file/object key infront of the extension.
 
 ## metricsconfig_root
+Can be either local filesystem or S3, by default it's ${config_root}/metricsconfig_root.
