@@ -120,10 +120,12 @@ The web interface is built using AngularJS and is completly stand-alone, it coul
 The server is currently built and developed and tested using Glassfish 4 but should run a container supporting JAX-RS. A small tweak to the configuration had to be done to ellinimate a problem with a version of Guava in Glassfish "leaking" into the application and interfered with Guava functionality used in the application.
 
 # Configuration
-Configuration locations can be either in a local file system or in S3. All S3 locations are on the form "s3://<bucket>/<key>". When configuring the root, then all objects are accessed relative to that.
+Configuration locations can be either in a local file system or in S3. All S3 locations are on the form `s3://<bucket>/<key>`. When configuring the root, then all objects are accessed relative to that.
+	
+The values of the XYZ_root variables can either be done through java system properties or environment variables, in that order.
 
 ## config_root
-An absolute path to a local file system or an S3 object key on the format "s3://<bucketname>/<s3-folder-prefix>".
+An absolute path to a local file system or an S3 object key on the format `s3://<bucketname>/<s3-folder-prefix>`.
 
 ### mqtt.properties
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
