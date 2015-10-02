@@ -68,11 +68,14 @@ The API resources are
 	- GET - Returns a list of running metrics series
 	/{load config id}
 		- DELETE - Deletes the metrics series and stops the process generating load
+		- GET - Retrieve information about the running metrics series
 
 /template
 	GET - Returns a list of templates
+	POST - Create template
 	/{template-id}
 		GET - Returns the template object
+		DELETE - Delete the template
 ````		
 
 # Web Interface
