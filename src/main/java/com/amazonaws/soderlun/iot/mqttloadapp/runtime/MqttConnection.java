@@ -2,6 +2,7 @@ package com.amazonaws.soderlun.iot.mqttloadapp.runtime;
 
 import com.amazonaws.soderlun.iot.mqttloadapp.SslUtil;
 import java.io.File;
+import java.net.NetworkInterface;
 import java.sql.Timestamp;
 import java.util.Properties;
 import java.util.Random;
@@ -44,6 +45,13 @@ public class MqttConnection implements MqttCallback {
 
         Random rnd = new Random();
         clientId = props.getProperty("clientid", System.getenv("mqtt.clientid") != null ? System.getenv("mqtt.clientid") : "mqtt.loadgen." + rnd.nextInt(100000));
+        if( clientId == null || clientId.length() == 0) {
+            try {
+                clientId = NetworkInterface.getNetworkInterfaces().hasMoreElements() ? NetworkInterface.getNetworkInterfaces().nextElement().getInetAddresses().nextElement().getHostName() : "noop";
+            } catch (Exception ex) {
+                LOG.log(Level.SEVERE, "Could not retrieve hostname", ex);
+            }
+        }
 
         //This sample stores in a temporary directory... where messages temporarily
         // stored until the message has been delivered to the server.

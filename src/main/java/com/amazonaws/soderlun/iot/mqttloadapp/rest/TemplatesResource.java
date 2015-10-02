@@ -63,7 +63,7 @@ public class TemplatesResource {
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response postJson(String content) {
+    public Response createTemplate(String content) {
         Template t = Template.newInstance(
                 Json.createReader(new StringReader(content)).readObject());
         TemplateRepository.getInstance().putTemplate(t);

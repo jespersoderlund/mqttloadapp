@@ -2,9 +2,7 @@ package com.amazonaws.soderlun.iot.mqttloadapp.rest;
 
 import com.amazonaws.soderlun.iot.mqttloadapp.runtime.LoadConfigurationRuntimeRegistry;
 import com.amazonaws.soderlun.iot.mqttloadapp.runtime.RunningLoadConfiguration;
-import com.amazonaws.soderlun.iot.mqttloadapp.rest.MetricsSeriesResource;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;

@@ -25,13 +25,13 @@ public class LoadGeneratorThread extends Thread {
     private static final int MIN_TICK_TIME_MS = 10;
 
     private boolean running = false;
-    private List<FunctionConfiguration> metricsseries = new ArrayList<>();
+    private List<FunctionConfiguration> functions = new ArrayList<>();
     private final LoadConfig config;
     private long started;
     private int numberTicks = 0;
 
     public LoadGeneratorThread(LoadConfig cfg, List<FunctionConfiguration> ms) {
-        metricsseries = ms;
+        functions = ms;
         config = cfg;
     }
 
@@ -55,7 +55,7 @@ public class LoadGeneratorThread extends Thread {
             limiter.acquire();
 
             // int numberOfPayloads = calculatePayloadsPerTick(ratePerMinute, timeForLastTick, MIN_TICK_TIME_MS);
-            byte[] payload = formatPayload(config.getTemplateId(), metricsseries);
+            byte[] payload = formatPayload(config.getTemplateId(), functions);
 
             try {
                 connection.publish(config.getTopic(), 0, payload);
