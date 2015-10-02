@@ -1,6 +1,6 @@
 # mqttloadapp
 Configurable load generator for MQTT messages
-.h2 Templates
+## Templates
 Two kinds of templates are supported by the load generator. JSON and CSV.
 
 The templates cannot currently be created or edited in the GUI, but can be visualized.
