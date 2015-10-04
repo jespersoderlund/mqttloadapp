@@ -30,6 +30,7 @@ import javax.ws.rs.core.UriInfo;
  * @author soderlun
  */
 public class ConfigResource {
+
     private static final Logger LOG = Logger.getLogger(ConfigResource.class.getName());
 
     static ConfigResource getInstance(String id) {
@@ -65,7 +66,7 @@ public class ConfigResource {
      */
     @GET
     @Produces("application/json")
-    public String getJson() {
+    public String getRepresentation() {
 
         LoadConfig cfg = LoadConfigsRegistry.getConfig(id);
 
@@ -84,13 +85,13 @@ public class ConfigResource {
      */
     @PUT
     @Consumes("application/json")
-    public void putJson(String c) {
+    public void updateConfig(String c) {
         JsonObject content = Json.createReader(new StringReader(c))
                 .readObject();
 
         LoadConfig cfg = LoadConfig.newInstance(content);
         cfg.setId(id);
-        LoadConfigsRegistry.updateConfig(id, cfg);               
+        LoadConfigsRegistry.updateConfig(id, cfg);
 //        Response resp = Response.created(context.getAbsolutePathBuilder().path(cfg.getId()).build()) .build();              
 //        return resp;        
     }
@@ -115,11 +116,11 @@ public class ConfigResource {
 
                 // return Response.created( context.getAbsolutePathBuilder().path(cfg.getId()).build()).build();
                 return Response.created(baseBuild.path(builder.build().toString()).path(cfg.getId()).build()).build();
+
             } catch (Exception ex) {
-                LOG.log(Level.SEVERE,"could not start", ex);
+                LOG.log(Level.SEVERE, "could not start", ex);
                 return Response.serverError().build();
             }
-
         } else {
             LOG.severe("No metrics series defined for config " + cfg.getId());
             return Response.serverError().build();
@@ -135,7 +136,7 @@ public class ConfigResource {
             LoadConfigsRegistry.deleteConfig(id);
         } catch (LoadConfigException ex) {
             Logger.getLogger(ConfigResource.class.getName()).log(Level.SEVERE, "Could not find config id" + id, ex);
-            throw  new javax.ws.rs.NotFoundException();
+            throw new javax.ws.rs.NotFoundException();
         }
     }
 }

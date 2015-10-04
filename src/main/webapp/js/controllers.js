@@ -20,7 +20,7 @@ configControllers.controller('ConfigListController', function ($scope, $http, $q
         }
     });
 
-    $scope.startMetricsSeries = function (config) {
+    $scope.startLoadConfiguration = function (config) {
         $http.post('webresources/config/' + config.id, '{}').success(function (response) {
             $location.path('webresources/series/' + config.id);
             var index = $scope.configs.indexOf(config);
@@ -68,7 +68,7 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
         $scope.config.editmode = false;
     };
 
-    $scope.createMetricsSeries = function () {
+    $scope.createFunction = function () {
         $scope.ms = {};
 
         ngDialog.openConfirm({
@@ -80,12 +80,12 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
             showClose: true
         }).then(function (data) {
             if (data != null) {
-                $scope.config.metricsseries.push(data);
+                $scope.config.functions.push(data);
             }
         });
     }
 
-    $scope.editMetricsSeries = function (ms, index) {
+    $scope.editFunction = function (ms, index) {
         $scope.ms = ms;
         $scope.ms.index = index;
 
@@ -98,7 +98,7 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
         }).then(function (ms) {
             if (ms != null) {
                 if (ms.index != null) {
-                    $scope.config.metricsseries[ms.index] = ms;
+                    $scope.config.functions[ms.index] = ms;
                 }
                 else {
                     alert('New ms');
@@ -109,9 +109,9 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
         });
     };
 
-    $scope.deleteMetricsSeries = function (ms) {
-        var index = $scope.config.metricsseries.indexOf(ms);
-        $scope.config.metricsseries.splice(index, 1);
+    $scope.deleteFunction = function (ms) {
+        var index = $scope.config.functions.indexOf(ms);
+        $scope.config.functions.splice(index, 1);
     };
 });
 
@@ -120,7 +120,8 @@ configControllers.controller('FunctionController', function ($scope, $q, ngDialo
         $scope.ms.parameters = [];
     }
 
-    $scope.saveMetricsSeries = function () {
+    $scope.saveFunction = function () {
+        alert("Function: " + $scope.ms.toString())
         $scope.confirm($scope.ms);
     };
 
@@ -129,7 +130,7 @@ configControllers.controller('FunctionController', function ($scope, $q, ngDialo
         $scope.ms.parameters.splice(index, 1);
     };
 
-    $scope.cancelMetricsSeriesEdit = function () {
+    $scope.cancelFunctionEdit = function () {
         $scope.confirm();
     };
 
@@ -156,6 +157,7 @@ configControllers.controller('ParameterController', function ($scope) {
     $scope.parameter = {};
 
     $scope.saveParameter = function () {
+        alert()
         $scope.confirm($scope.parameter);
     };
 
@@ -163,6 +165,16 @@ configControllers.controller('ParameterController', function ($scope) {
         $scope.confirm();
     };
 });
+
+configControllers.controller('InplaceParameterController', function($scope) {
+    
+    $scope.updateParameter = function(data) {
+        alert('Finished editing');
+      $scope.parameter.value = data;  
+    };
+    
+});
+
 
 var templateControllers = angular.module('templateControllers', []);
 

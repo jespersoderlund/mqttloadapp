@@ -1,4 +1,4 @@
-var mqttApp = angular.module('mqttApp', ['ngRoute', 'configControllers', 'templateControllers', 'metricsSeriesContollers', 'applicationServices', 'ngDialog']);
+var mqttApp = angular.module('mqttApp', ['ngRoute', 'configControllers', 'templateControllers', 'metricsSeriesContollers', 'applicationServices', 'ngDialog', 'xeditable']);
 
 mqttApp.config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/config', {
@@ -25,3 +25,22 @@ mqttApp.config(['$routeProvider', function ($routeProvider) {
         }).otherwise({redirectTo: '/config'});
     }]);
 
+mqttApp.directive("contenteditable", function() {
+  return {
+    require: "ngModel",
+    link: function(scope, element, attrs, ngModel) {
+
+      function read() {
+        ngModel.$setViewValue(element.html());
+      }
+
+      ngModel.$render = function() {
+        element.html(ngModel.$viewValue || "");
+      };
+
+      element.bind("blur keyup change", function() {
+        scope.$apply(read);
+      });
+    }
+  };
+});

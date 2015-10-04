@@ -29,19 +29,20 @@ public class RunningLoadConfiguration {
         thread = new LoadGeneratorThread(config, config.getMetricsSeries());
     }
 
-    public void start() {
+    public boolean start() {
         LOG.log(Level.INFO, "Starting {0}", config.getId());
         MqttConnection con = MqttConnection.getInstance();
         if (con.connect(SystemConfig.getMqttConfigProperties())) {
             LOG.info("Connected successfully");
             thread.start();
+            start = System.currentTimeMillis();
+            return true;
         } else {
             LOG.warning("Could not connect to MQTT-broker");
             // TBD - Disabled while offline
             // throw new InternalServerErrorException("Could not connect to MQTT-broker");
+            return false;
         }
-
-        start = System.currentTimeMillis();
     }
 
     public void stop(String cfgId) {

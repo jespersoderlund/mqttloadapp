@@ -95,6 +95,8 @@ public class LoadGeneratorThread extends Thread {
         variableValues.put("elapsedtime", Long.toString(elapsedTime));
 
         variableValues.put("tick", Integer.toString(numberTicks));
+        
+        variableValues.put("seriesid", config.getId());
 
         Template template = TemplateRepository.getInstance().getTemplate(templateId);
         String content = template.getContent();

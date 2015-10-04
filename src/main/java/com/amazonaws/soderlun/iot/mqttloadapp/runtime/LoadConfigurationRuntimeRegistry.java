@@ -38,8 +38,7 @@ public class LoadConfigurationRuntimeRegistry {
 
             registry.remove(cfgId);
 
-        }
-        else {
+        } else {
             throw new RuntimeException("Could not find running load configuration " + cfgId);
         }
     }
@@ -53,8 +52,11 @@ public class LoadConfigurationRuntimeRegistry {
         LoadConfig cfg = LoadConfigsRegistry.getConfig(cfgId);
         if (cfg != null) {
             RunningLoadConfiguration rms = new RunningLoadConfiguration(cfg);
-            registry.put(cfgId, rms);
-            rms.start();
+            if (rms.start()) {
+                registry.put(cfgId, rms);
+            }
+        } else {
+            throw new RuntimeException("Could not start metrics series");
         }
     }
 
@@ -72,5 +74,4 @@ public class LoadConfigurationRuntimeRegistry {
         return registry.containsKey(id);
     }
 
-    
 }

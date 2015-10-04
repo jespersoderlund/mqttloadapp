@@ -18,6 +18,7 @@ The templates can contain a number of variables that will be replaced when insta
 * tick - The number of samples
 * elapsedtime - Milliseconds since start of run
 * timestamp - Unix epoch milliseconds
+* seriesid - The identify of the running load configuration generating the template
 * <variables from metrics series> - The variable from each metrics series is also available in the template for subsitution
 
 ## Functions
@@ -48,9 +49,12 @@ Algorithmic expression evaluation function where the alogirhtmic language suppor
 In the expressions the variables ”tick” and ”elapsed” are available for modelling. Elapsed is in milliseconds
 
 The parameters supported by the EXPR function are:
-- expression -
+- expression - The math expression language supported by the exp4j (http://www.objecthunter.net/exp4j/) library.
 - elapsedscalefactor - Scale factor to apply to the elapsetimestamp, e.g. with a scale factor of 1000 and 20000 ms elapsedtimestamp the variable ”elapsed” would have the value 20 when evaluated in the expressions
-- tickscalefactor - Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
+- elapsedoffset (optional) - A fixed offset of the "raw" elapsedtime in milliseconds, essentially simulating being ahead or behind the actual elapsed time
+- tickscalefactor (optional)- Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
+- tickoffset (optional) - A fixed offset of the actual ticks, this can for example allow the values to move to a more interesting area of the graph
+
 
 # API
 There is a REST-API, the resource endpoint is <host>:<port>/mqttloadapp/webresources. The API only supports application/json as content type.
