@@ -48,7 +48,7 @@ public class TextFunction extends Function {
     @Override
     public void value(StringBuilder buff, long millisElapsed, int ticks) {
 
-        if (weights.length > 0) {
+        if (weights != null && weights.length > 0) {
             // We want random weights
             int currSelection = rnd.nextInt(totalWeights);
             int accumulatedWeights = 0;

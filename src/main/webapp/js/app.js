@@ -1,4 +1,4 @@
-var mqttApp = angular.module('mqttApp', ['ngRoute', 'configControllers', 'templateControllers', 'metricsSeriesContollers', 'applicationServices', 'ngDialog', 'xeditable']);
+var mqttApp = angular.module('mqttApp', ['ngRoute', 'configControllers', 'templateControllers', 'metricsSeriesContollers', 'applicationServices', 'ngDialog']);
 
 mqttApp.config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/config', {

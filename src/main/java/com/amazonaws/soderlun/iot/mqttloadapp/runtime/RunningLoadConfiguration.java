@@ -49,6 +49,12 @@ public class RunningLoadConfiguration {
         LOG.log(Level.INFO, "Stopping {0}", config.getId());
         if (thread != null) {
             thread.shutdown();
+            try {
+                thread.join(5000);
+                LOG.info("Running thread was terminated");
+            } catch (InterruptedException ex) {
+                LOG.log(Level.SEVERE, "Could not terminate thread", ex);
+            }
             thread = null;
         }
     }

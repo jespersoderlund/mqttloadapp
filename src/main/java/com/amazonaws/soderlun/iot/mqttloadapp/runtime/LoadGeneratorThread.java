@@ -72,6 +72,7 @@ public class LoadGeneratorThread extends Thread {
 
     public void shutdown() {
         running = false;
+        started = -1;
         this.interrupt();
     }
 
