@@ -134,7 +134,7 @@ An absolute path to a local file system or an S3 object key on the format `s3://
 ### mqtt.properties
 Contains properties for establishing the connection to the MQTT Gateway of Icebreaker.
 The following properties need to be provided for the connection to the MQTT-broker
-* brokerurl - The url and port to the broker gateway, e.g. `tcp:data.iot.us-east-1.amazonaws.com:8883`
+* brokerurl - The url and port to the broker gateway, e.g. `tcp:<MQTT broker host>:<broker port>`
 * clientid - The clientid to be used in the MQTT-connection, if left blank will be a string representation of the local IP-address for the server
 * cafile - The certificate file with the Root CA authorizing the authenticity of the server side of the connection
 * cert - The private certificate that is registered with the IoT platform
