@@ -136,9 +136,9 @@ Contains properties for establishing the connection to the MQTT Gateway of Icebr
 The following properties need to be provided for the connection to the MQTT-broker
 * brokerurl - The url and port to the broker gateway, e.g. `tcp:<MQTT broker host>:<broker port>`
 * clientid - The clientid to be used in the MQTT-connection, if left blank will be a string representation of the local IP-address for the server
-* cafile - The certificate file with the Root CA authorizing the authenticity of the server side of the connection
-* cert - The private certificate that is registered with the IoT platform
-* privkey - The private key for the public key contained in the certicate
+* cafile - The certificate file with the Root CA authorizing the authenticity of the server side of the connection. The format is PEM.
+* cert - The private certificate that is registered with the IoT platform. The format is PEM.
+* privkey - The private key for the public key contained in the certicate. The format is PEM.
 
 ## template_root
 Template root can be either local filesystem or S3. By detault it's ${config_root}/templates.
