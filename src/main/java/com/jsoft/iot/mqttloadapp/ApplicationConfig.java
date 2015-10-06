@@ -24,7 +24,6 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(com.jsoft.iot.mqttloadapp.rest.ConfigResource.class);
         resources.add(com.jsoft.iot.mqttloadapp.rest.ConfigsResource.class);
         resources.add(com.jsoft.iot.mqttloadapp.rest.MetricsSeriesCollectionResource.class);
         resources.add(com.jsoft.iot.mqttloadapp.rest.MetricsSeriesResource.class);
