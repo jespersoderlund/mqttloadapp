@@ -20,6 +20,24 @@ public class ExpressionFunction extends Function {
         super(t, v, props);
 
         expressionTemplate = new ExpressionBuilder(props.getProperty("expression", "tick"))
+                .function(new net.objecthunter.exp4j.function.Function("max", 2) {
+                    @Override
+                    public double apply(double... args) {
+                        return Math.max(args[0], args[1]);
+                    }
+                })
+                .function(new net.objecthunter.exp4j.function.Function("min", 2) {
+                    @Override
+                    public double apply(double... args) {
+                        return Math.min(args[0], args[1]);
+                    }
+                })              
+                .function(new net.objecthunter.exp4j.function.Function("random") {
+                    @Override
+                    public double apply(double... args) {
+                        return Math.random();
+                    }
+                })
                 .variables("tick", "elapsed");
         scaleFactorElapsed = Integer.parseInt(props.getProperty("elapsedscalefactor", "1"));
         scaleFactorTick = Integer.parseInt(props.getProperty("tickscalefactor", "1"));
