@@ -19,7 +19,7 @@ The templates can contain a number of variables that will be replaced when insta
 * elapsedtime - Milliseconds since start of run
 * timestamp - Unix epoch milliseconds
 * seriesid - The identify of the running load configuration generating the template
-* <variables from metrics series> - The variable from each metrics series is also available in the template for subsitution
+* `<variables from metrics series>` - The variable from each metrics series is also available in the template for subsitution
 
 ## Functions
 Each function has a function type which will specifify the types of values and the configuration parameters supported. A function will generate a single output value based on the following input parameters:
