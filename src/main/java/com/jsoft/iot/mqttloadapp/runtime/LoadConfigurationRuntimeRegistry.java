@@ -34,9 +34,9 @@ public class LoadConfigurationRuntimeRegistry {
 
         RunningLoadConfiguration rt = registry.get(cfgId);
         if (rt != null) {
-            rt.stop(cfgId);
-
             registry.remove(cfgId);
+
+            rt.stop(cfgId);
 
         } else {
             throw new RuntimeException("Could not find running load configuration " + cfgId);

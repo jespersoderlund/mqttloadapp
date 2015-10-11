@@ -79,6 +79,9 @@ public class MqttConnection implements MqttCallback {
 
             // Construct an MQTT blocking mode client
             client = new MqttClient(this.brokerUrl, clientId, dataStore);
+            
+            // Wait max 2sec for a blocking call
+            client.setTimeToWait(2000);
 
             // Set this wrapper as the callback handler
             client.setCallback(this);
@@ -145,10 +148,10 @@ public class MqttConnection implements MqttCallback {
                 return;
             }
         }
-        
-        String instantiatedTopicName = topicName.replace("$clientid", clientId );
-        instantiatedTopicName = instantiatedTopicName.replace("$configid",configId );
-        
+
+        String instantiatedTopicName = topicName.replace("$clientid", clientId);
+        instantiatedTopicName = instantiatedTopicName.replace("$configid", configId);
+
         String time = new Timestamp(System.currentTimeMillis()).toString();
         LOG.log(Level.INFO, "Publishing at: {0} to topic \"{1}\" qos {2}", new Object[]{time, instantiatedTopicName, qos});
 
@@ -197,7 +200,7 @@ public class MqttConnection implements MqttCallback {
         if (isConnected()) {
             try {
                 client.subscribe(controlTopic);
-                
+
                 String instantiatedTopic = controlTopic.replace("$clientid", clientId);
 
                 Pattern pattern = createMatchingPattern(instantiatedTopic);
@@ -235,12 +238,13 @@ public class MqttConnection implements MqttCallback {
 
     void unregister(RunningLoadConfiguration aThis, String controlTopic) {
         try {
+            listeners.remove(controlTopic);
+            matchers.remove(controlTopic);
+
             client.unsubscribe(controlTopic);
             LOG.info("Unsubscribed from control topic " + controlTopic);
         } catch (MqttException ex) {
             LOG.log(Level.SEVERE, "could not unsubscribe", ex);
         }
-        listeners.remove(controlTopic);
-        matchers.remove(controlTopic);
     }
 }

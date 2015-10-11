@@ -70,9 +70,11 @@ public class RunningLoadConfiguration implements MqttListener {
     public void stop(String cfgId) {
         LOG.log(Level.INFO, "Stopping {0}", config.getId());
         if (thread != null) {
-            MqttConnection.getInstance().unregister(this,  config.getControlTopic().replace("$configid", config.getId()));
-            thread.shutdown();
             try {
+                thread.shutdown();
+                
+                MqttConnection.getInstance().unregister(this, config.getControlTopic().replace("$configid", config.getId()));
+                
                 thread.join(5000);
                 LOG.info("Running thread was terminated");
             } catch (InterruptedException ex) {
