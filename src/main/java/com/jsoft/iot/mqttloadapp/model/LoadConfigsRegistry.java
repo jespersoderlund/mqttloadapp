@@ -160,7 +160,7 @@ public class LoadConfigsRegistry {
         } else if (isS3(root)) {
             AmazonS3 api = new AmazonS3Client(SystemConfig.getCredentials());
 
-            SystemConfig.S3Info info = SystemConfig.getS3Info(SystemConfig.getConfigRoot());
+            SystemConfig.S3Info info = SystemConfig.getS3Info(root);
 
             byte[] data;
             try {

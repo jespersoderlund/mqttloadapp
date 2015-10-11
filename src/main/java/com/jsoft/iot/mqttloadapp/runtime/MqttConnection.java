@@ -5,10 +5,13 @@ import com.jsoft.iot.mqttloadapp.SystemConfig;
 import java.io.File;
 import java.net.NetworkInterface;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -22,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
  * @author soderlun
  */
 public class MqttConnection implements MqttCallback {
+
     private static final Logger LOG = Logger.getLogger(MqttConnection.class.getName());
 
     private static final MqttConnection instance = new MqttConnection();
@@ -36,6 +40,8 @@ public class MqttConnection implements MqttCallback {
     private String brokerUrl;
     private String clientId;
     private boolean connected;
+    private Map<String, MqttListener> listeners = new HashMap<>();
+    private Map<String, Pattern> matchers = new HashMap<>();
 
     public boolean connect(Properties props) {
 
@@ -46,7 +52,7 @@ public class MqttConnection implements MqttCallback {
 
         Random rnd = new Random();
         clientId = props.getProperty("clientid", System.getenv("mqtt.clientid") != null ? System.getenv("mqtt.clientid") : "mqtt.loadgen." + rnd.nextInt(100000));
-        if( clientId == null || clientId.length() == 0) {
+        if (clientId == null || clientId.length() == 0) {
             try {
                 clientId = NetworkInterface.getNetworkInterfaces().hasMoreElements() ? NetworkInterface.getNetworkInterfaces().nextElement().getInetAddresses().nextElement().getHostName() : "noop";
             } catch (Exception ex) {
@@ -104,6 +110,13 @@ public class MqttConnection implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         LOG.log(Level.INFO, "Message arrived for topic: {0}, QoS: {1}, message: {2}", new Object[]{topic, message.getQos(), new String(message.getPayload())});
+
+        for (String tPattern : listeners.keySet()) {
+            if (matchesTopic(tPattern, topic)) {
+                // Notify the listener of the incoming message
+                listeners.get(tPattern).notify(message);
+            }
+        }
     }
 
     @Override
@@ -119,17 +132,21 @@ public class MqttConnection implements MqttCallback {
      * @param payload the set of bytes to send to the MQTT server
      * @throws MqttException
      */
-    public void publish(String topicName, int qos, byte[] payload) throws MqttException {
+    public void publish(String topicName, int qos, byte[] payload, String configId) throws MqttException {
 
-        if( ! connected ) {
+        if (!connected) {
             LOG.info("Trying to re-connect");
-            if( !connect(SystemConfig.getMqttConfigProperties()) ) {
+            if (!connect(SystemConfig.getMqttConfigProperties())) {
                 LOG.log(Level.WARNING, "Could not connect and publish {0} to topic {1}", new Object[]{new String(payload), topicName});
                 return;
-            }                   
+            }
         }
+        
+        String instantiatedTopicName = topicName.replace("$clientid", clientId );
+        instantiatedTopicName = instantiatedTopicName.replace("$configid",configId );
+        
         String time = new Timestamp(System.currentTimeMillis()).toString();
-        LOG.log(Level.INFO, "Publishing at: {0} to topic \"{1}\" qos {2}", new Object[]{time, topicName, qos});
+        LOG.log(Level.INFO, "Publishing at: {0} to topic \"{1}\" qos {2}", new Object[]{time, instantiatedTopicName, qos});
 
         // Create and configure a message
         MqttMessage message = new MqttMessage(payload);
@@ -138,7 +155,7 @@ public class MqttConnection implements MqttCallback {
         // Send the message to the server, control is not returned until
         // it has been delivered to the server meeting the specified
         // quality of service.
-        client.publish(topicName, message);
+        client.publish(instantiatedTopicName, message);
     }
 
     public void disconnect() {
@@ -170,5 +187,54 @@ public class MqttConnection implements MqttCallback {
         throw new IllegalStateException("Failed to create directory within "
                 + TEMP_DIR_ATTEMPTS + " attempts (tried "
                 + baseName + "0 to " + baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
+    }
+
+    void registerTopicListener(MqttListener l, String controlTopic) {
+        if (isConnected()) {
+            try {
+                client.subscribe(controlTopic);
+
+                Pattern pattern = createMatchingPattern(controlTopic);
+                matchers.put(controlTopic, pattern);
+                listeners.put(controlTopic, l);
+                LOG.log(Level.INFO, "Added subscription to {0}", controlTopic);
+            } catch (MqttException ex) {
+                LOG.log(Level.SEVERE, "Could not register topic listener: " + controlTopic, ex);
+            }
+        }
+    }
+
+    private boolean matchesTopic(String topicPattern, String topic) {
+        // TODO - Create a proper MQTT pattern wildcard matching
+        // Could probably do something with creating a regexp on the fly by
+        // substituting # and + with regexp patterns.
+        Pattern p = matchers.get(topicPattern);
+        if (p != null) {
+            return p.matcher(topic).matches();
+        }
+
+        return false;
+    }
+
+    private static final String MQTT_HASH_REGEXP_REPLACEMENT = "[\\w,\\/]*";
+    private static final String MQTT_PLUS_REGEXP_REPLACEMENT = "\\w*";
+
+    private Pattern createMatchingPattern(String controlTopic) {
+        String result = controlTopic.replace("/", "\\/");
+        result = result.replace("#", MQTT_HASH_REGEXP_REPLACEMENT);
+        result = result.replace("\\+", MQTT_PLUS_REGEXP_REPLACEMENT);
+
+        return Pattern.compile(result);
+    }
+
+    void unregister(RunningLoadConfiguration aThis, String controlTopic) {
+        try {
+            client.unsubscribe(controlTopic);
+            LOG.info("Unsubscribed from control topic " + controlTopic);
+        } catch (MqttException ex) {
+            LOG.log(Level.SEVERE, "could not unsubscribe", ex);
+        }
+        listeners.remove(controlTopic);
+        matchers.remove(controlTopic);
     }
 }

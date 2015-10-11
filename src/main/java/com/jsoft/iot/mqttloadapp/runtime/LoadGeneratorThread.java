@@ -58,7 +58,7 @@ public class LoadGeneratorThread extends Thread {
             byte[] payload = formatPayload(config.getTemplateId(), functions);
 
             try {
-                connection.publish(config.getTopic(), 0, payload);
+                connection.publish(config.getTopic(), 0, payload, config.getId());
             } catch (MqttException ex) {
                 LOG.log(Level.SEVERE, "Could not publish the MQTT-message", ex);
             }
@@ -98,6 +98,8 @@ public class LoadGeneratorThread extends Thread {
         variableValues.put("tick", Integer.toString(numberTicks));
         
         variableValues.put("seriesid", config.getId());
+        
+        variableValues.put("configid", config.getId());
 
         Template template = TemplateRepository.getInstance().getTemplate(templateId);
         String content = template.getContent();

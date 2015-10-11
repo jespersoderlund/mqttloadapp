@@ -26,6 +26,7 @@ public class LoadConfig {
     String templateId;
     String topic;
     private int rate;
+    String controlTopic;
 
     public LoadConfig(String id) {
         this.id = id;
@@ -60,7 +61,8 @@ public class LoadConfig {
         builder.add("id", id)
                 .add("templateid", getTemplateId())
                 .add("topic", getTopic())
-                .add("rate", getRate());
+                .add("rate", getRate())
+                .add("controltopic", controlTopic);
 
         JsonArrayBuilder functionsBuilder = Json.createArrayBuilder();
 
@@ -79,6 +81,7 @@ public class LoadConfig {
         String templateId = obj.getString("templateid");
         int rate = obj.getInt("rate");
         String id = obj.getString("id", null);
+        String ctrlTopic = obj.getString("controltopic", "");
 
         // Parse Metrics Series
         JsonArray metrics = obj.getJsonArray("functions");
@@ -91,6 +94,7 @@ public class LoadConfig {
 
         LoadConfig cfg = new LoadConfig(templateId, topic, series);
         cfg.setRate(rate);
+        cfg.setControlTopic(ctrlTopic);
         if (id != null) {
             cfg.setId(id);
         }
@@ -113,5 +117,13 @@ public class LoadConfig {
 
     public void setRate(int rate) {
         this.rate = rate;
+    }
+
+    public void setControlTopic(String ctrlTopic) {
+        controlTopic = ctrlTopic;
+    }
+    public String getControlTopic()
+    {
+        return controlTopic;
     }
 }

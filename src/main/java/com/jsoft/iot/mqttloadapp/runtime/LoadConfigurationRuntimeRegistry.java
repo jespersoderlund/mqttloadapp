@@ -73,5 +73,4 @@ public class LoadConfigurationRuntimeRegistry {
     public boolean isRunning(String id) {
         return registry.containsKey(id);
     }
-
 }

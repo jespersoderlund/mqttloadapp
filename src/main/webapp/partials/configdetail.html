@@ -20,6 +20,10 @@
                             <label for="configRate">Rate (per minute)</label>
                             <input id="configRate" type="number" class="form-control" ng-model="config.rate" ng-value="config.rate" ng-disabled="!config.editmode" >
                         </div>
+                        <div class="form-group">
+                            <label for="controlTopic">Control Topic</label>
+                            <input id="controlTopic" type="string" class="form-control" ng-model="config.controltopic" ng-disabled="!config.editmode">
+                        </div>
                         <table class="table table-hover">
                             <caption>Functions</caption>
                             <thead><tr><th>Function</th><th>Variable</th><th>Parameters</th></tr></thead>

@@ -3,16 +3,23 @@ package com.jsoft.iot.mqttloadapp.runtime;
 import com.jsoft.iot.mqttloadapp.model.FunctionConfiguration;
 import com.jsoft.iot.mqttloadapp.SystemConfig;
 import com.jsoft.iot.mqttloadapp.model.LoadConfig;
+import java.beans.Beans;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.stream.JsonParser;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
  *
  * @author soderlun
  */
-public class RunningLoadConfiguration {
+public class RunningLoadConfiguration implements MqttListener {
 
     private static final Logger LOG = Logger.getLogger(RunningLoadConfiguration.class.getName());
 
@@ -32,22 +39,40 @@ public class RunningLoadConfiguration {
     public boolean start() {
         LOG.log(Level.INFO, "Starting {0}", config.getId());
         MqttConnection con = MqttConnection.getInstance();
-        if (con.connect(SystemConfig.getMqttConfigProperties())) {
-            LOG.info("Connected successfully");
-            thread.start();
-            start = System.currentTimeMillis();
-            return true;
+        if (!con.isConnected()) {
+            if (con.connect(SystemConfig.getMqttConfigProperties())) {
+                LOG.info("Connected successfully");
+            } else {
+                LOG.warning("Could not connect to MQTT-broker");
+                // TBD - Disabled while offline
+                // throw new InternalServerErrorException("Could not connect to MQTT-broker");
+                return false;
+            }
         } else {
-            LOG.warning("Could not connect to MQTT-broker");
-            // TBD - Disabled while offline
-            // throw new InternalServerErrorException("Could not connect to MQTT-broker");
-            return false;
+            LOG.info("Connection already established, reusing");
         }
+
+        // Start metrics thread
+        thread.start();
+        start = System.currentTimeMillis();
+
+        // Configure control messaging listener if appropriate
+        if (shouldRegisterControlTopic(config.getControlTopic())) {
+            String instantiatedTopic = config.getControlTopic().replace("$configid", config.getId());
+            con.registerTopicListener(this, instantiatedTopic);
+        }
+
+        return true;
+    }
+
+    private boolean shouldRegisterControlTopic(String ctrlTopic) {
+        return ctrlTopic != null && ctrlTopic.length() > 0;
     }
 
     public void stop(String cfgId) {
         LOG.log(Level.INFO, "Stopping {0}", config.getId());
         if (thread != null) {
+            MqttConnection.getInstance().unregister(this,  config.getControlTopic().replace("$configid", config.getId()));
             thread.shutdown();
             try {
                 thread.join(5000);
@@ -71,5 +96,29 @@ public class RunningLoadConfiguration {
         return Json.createObjectBuilder()
                 .add("id", getId())
                 .add("start", getStart()).build();
+    }
+
+    @Override
+    public void notify(MqttMessage message) {
+        // We have received a control message
+        byte[] msg = message.getPayload();
+        try {
+            String str = msg != null ? new String(msg, "UTF-8") : "";
+            // Only one control message supported, 
+            // either in text or in json with single "action" attribute
+            if (str.equals("STOP") || isJsonStop(str)) {
+                LoadConfigurationRuntimeRegistry.getInstance().stop(config.getId());
+            } else {
+                LOG.log(Level.INFO, "Incoming message not a supported action: {0}", str);
+            }
+        } catch (UnsupportedEncodingException ex) {
+            LOG.log(Level.SEVERE, "Could not decode control message: " + Arrays.toString(msg), ex);
+        }
+    }
+
+    private boolean isJsonStop(String str) {
+        JsonReader reader = Json.createReader(new StringReader(str));
+        String action = reader.readObject().getString("action", "");
+        return action.length() > 0 && action.equals("STOP");
     }
 }
