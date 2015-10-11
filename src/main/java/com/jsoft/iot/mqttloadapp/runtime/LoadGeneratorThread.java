@@ -100,6 +100,8 @@ public class LoadGeneratorThread extends Thread {
         variableValues.put("seriesid", config.getId());
         
         variableValues.put("configid", config.getId());
+        
+        variableValues.put("clientid", MqttConnection.getInstance().getClientId());
 
         Template template = TemplateRepository.getInstance().getTemplate(templateId);
         String content = template.getContent();

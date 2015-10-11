@@ -100,6 +100,10 @@ public class MqttConnection implements MqttCallback {
         return false;
     }
 
+    public String getClientId() {
+        return clientId;
+    }
+
     @Override
     public void connectionLost(Throwable cause) {
         LOG.log(Level.SEVERE, "Connection lost: " + cause.getLocalizedMessage(), cause);
