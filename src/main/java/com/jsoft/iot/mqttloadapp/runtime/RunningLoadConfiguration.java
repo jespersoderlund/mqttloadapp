@@ -3,7 +3,6 @@ package com.jsoft.iot.mqttloadapp.runtime;
 import com.jsoft.iot.mqttloadapp.model.FunctionConfiguration;
 import com.jsoft.iot.mqttloadapp.SystemConfig;
 import com.jsoft.iot.mqttloadapp.model.LoadConfig;
-import java.beans.Beans;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -12,7 +11,6 @@ import java.util.logging.Logger;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
-import javax.json.stream.JsonParser;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 /**
