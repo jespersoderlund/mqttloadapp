@@ -9,6 +9,12 @@ A load configuration is the entity that as a unit can be started and stopped. A 
 
 A running load configuration is called a metrics series.
 
+
+## Topic
+The topic that the metrics series are published to. The topic can contain the following variables that will be replaced in runtime:
+* $clientid
+* $configid
+
 ## Templates
 Two kinds of templates are supported by the load generator. JSON and CSV.
 
@@ -19,7 +25,19 @@ The templates can contain a number of variables that will be replaced when insta
 * elapsedtime - Milliseconds since start of run
 * timestamp - Unix epoch milliseconds
 * seriesid - The identify of the running load configuration generating the template
-* `<variables from metrics series>` - The variable from each metrics series is also available in the template for subsitution
+* `<variables from metrics series>` - The variable from each metrics series is also available in the template for subsitution.
+	
+
+## Control topic
+A running load generator can be controlled through a control topic.
+The commands can either be a string with the command in capital letters, or a json with an attribute called "action" and the value being a string in all caps with the command.
+
+The following commands are supported:
+* STOP - The the specific metrics series is stopped
+
+The following variables are supported in the control-topic:
+* `$configid`
+* `$clientid`
 
 ## Functions
 Each function has a function type which will specifify the types of values and the configuration parameters supported. A function will generate a single output value based on the following input parameters:
@@ -46,7 +64,7 @@ The supported parameters are:
 ### EXPR
 Algorithmic expression evaluation function where the alogirhtmic language supported by the exp4j library http://www.objecthunter.net/exp4j/. For example complex algorithmic expressions "X^3+4+sin(x)*x^2” can be expressed and generate interesting behaviors over time.
 
-In the expressions the variables ”tick” and ”elapsed” are available for modelling. Elapsed is in milliseconds
+In the expressions the variables ”tick” and ”elapsed” are available for modelling. Elapsed is in milliseconds.
 
 The parameters supported by the EXPR function are:
 - expression - The math expression language supported by the exp4j (http://www.objecthunter.net/exp4j/) library.
@@ -55,6 +73,9 @@ The parameters supported by the EXPR function are:
 - tickscalefactor (optional)- Scale factor to apply to the ”tick” variable, e.g. with a scale factor of 10 and tick of 200 the variable ”tick” would have the value 20 when evaluated in the expression.
 - tickoffset (optional) - A fixed offset of the actual ticks, this can for example allow the values to move to a more interesting area of the graph
 
+In addition to the standard functinality of exp4j two custom functions have been added:
+- max - Returning the maximum of 2 operands
+- min - Returning the minimum of 2 operands
 
 # API
 There is a REST-API, the resource endpoint is <host>:<port>/mqttloadapp/webresources. The API only supports application/json as content type.

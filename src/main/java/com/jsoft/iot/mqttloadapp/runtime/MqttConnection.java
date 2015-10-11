@@ -193,11 +193,13 @@ public class MqttConnection implements MqttCallback {
         if (isConnected()) {
             try {
                 client.subscribe(controlTopic);
+                
+                String instantiatedTopic = controlTopic.replace("$clientid", clientId);
 
-                Pattern pattern = createMatchingPattern(controlTopic);
+                Pattern pattern = createMatchingPattern(instantiatedTopic);
                 matchers.put(controlTopic, pattern);
                 listeners.put(controlTopic, l);
-                LOG.log(Level.INFO, "Added subscription to {0}", controlTopic);
+                LOG.log(Level.INFO, "Added subscription to {0}", instantiatedTopic);
             } catch (MqttException ex) {
                 LOG.log(Level.SEVERE, "Could not register topic listener: " + controlTopic, ex);
             }
