@@ -114,6 +114,11 @@ public class TemplateRepository {
                 }
             }
         }
+        
+        cachedTemplates.clear();
+        for(Template t : result) {
+            cachedTemplates.put(t.getName(), t);
+        }
 
         return result;
     }
