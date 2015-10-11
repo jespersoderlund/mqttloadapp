@@ -80,8 +80,8 @@ public class MqttConnection implements MqttCallback {
             // Construct an MQTT blocking mode client
             client = new MqttClient(this.brokerUrl, clientId, dataStore);
             
-            // Wait max 2sec for a blocking call
-            client.setTimeToWait(2000);
+            // Wait max 10sec for a blocking call
+            client.setTimeToWait(10000);
 
             // Set this wrapper as the callback handler
             client.setCallback(this);
