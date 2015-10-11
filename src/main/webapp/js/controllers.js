@@ -101,7 +101,6 @@ configControllers.controller('ConfigDetailController', function ($scope, $http, 
                     $scope.config.functions[ms.index] = ms;
                 }
                 else {
-                    alert('New ms');
                 }
             }
             else {
@@ -121,7 +120,6 @@ configControllers.controller('FunctionController', function ($scope, $q, ngDialo
     }
 
     $scope.saveFunction = function () {
-        alert("Function: " + $scope.ms.toString())
         $scope.confirm($scope.ms);
     };
 
@@ -157,7 +155,6 @@ configControllers.controller('ParameterController', function ($scope) {
     $scope.parameter = {};
 
     $scope.saveParameter = function () {
-        alert()
         $scope.confirm($scope.parameter);
     };
 
@@ -169,7 +166,6 @@ configControllers.controller('ParameterController', function ($scope) {
 configControllers.controller('InplaceParameterController', function($scope) {
     
     $scope.updateParameter = function(data) {
-        alert('Finished editing');
       $scope.parameter.value = data;  
     };
     
